@@ -4,8 +4,9 @@ core/serializers.py
 
 # Import necessary modules and classes
 from rest_framework import serializers
-from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from .models import User
 
 
 # Custom serializer for obtaining JWT tokens with additional user information

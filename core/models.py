@@ -2,9 +2,10 @@
 core/models.py
 """
 
-from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
 import uuid
+
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 
 
 # Custom User Manager to handle user creation and superuser creation

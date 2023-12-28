@@ -3,13 +3,14 @@ core/urls.py
 """
 
 # Import necessary modules and classes
-from django.urls import path, include
+from django.urls import include, path
+
 from .views import (
+    RedisCacheTokensView,
+    RefreshAccessTokenView,
     RegistrationView,
     UserLoginView,
     UserProileView,
-    RedisCacheTokensView,
-    RefreshAccessTokenView,
 )
 
 # Define URL patterns specific to the 'core' app

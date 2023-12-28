@@ -2,22 +2,23 @@
 core/views.py
 """
 
+from django.conf import settings
+from django.contrib.auth import authenticate
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from rest_framework import status
+from rest_framework.generics import GenericAPIView, ListAPIView
 # Import necessary modules and classes
 from rest_framework.permissions import AllowAny
-from rest_framework.generics import GenericAPIView, ListAPIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
+from .models import User
 from .serializers import (
     CustomTokenObtainPairSerializer,
-    UserSerializer,
     UserRegisterSerializer,
+    UserSerializer,
 )
-from rest_framework import status
-from rest_framework.response import Response
-from .models import User
-from django.contrib.auth import authenticate
-from django.views.decorators.cache import cache_page
-from django.conf import settings
-from django.core.cache import cache
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 
 # View for user registration
@@ -62,9 +63,7 @@ class RegistrationView(GenericAPIView):
                 "access_token": tokens["access"],
             }
 
-            return Response(
-                {"code": 201, "data": response_data}, status=status.HTTP_201_CREATED
-            )
+            return Response({"code": 201, "data": response_data}, status=status.HTTP_201_CREATED)
 
         return Response(
             {"code": 403, "errors": serializer.errors},
@@ -92,9 +91,7 @@ class UserLoginView(GenericAPIView):
             cache.set(user.uuid, token["refresh"], timeout=3600)  # 1 hour
 
             response_dict = {"uuid": user.uuid, "token": token, "msg": "Login Success"}
-            return Response(
-                {"code": 200, "data": response_dict}, status=status.HTTP_200_OK
-            )
+            return Response({"code": 200, "data": response_dict}, status=status.HTTP_200_OK)
         return Response(
             {"code": 404, "errors": "Email or Password is not Valid"},
             status=status.HTTP_404_NOT_FOUND,
@@ -127,9 +124,7 @@ class RedisCacheTokensView(GenericAPIView):
         token = cache.get(uuid)
         if token:
             response_dict = {"refresh_token": token}
-            return Response(
-                {"code": 200, "data": response_dict}, status=status.HTTP_200_OK
-            )
+            return Response({"code": 200, "data": response_dict}, status=status.HTTP_200_OK)
         return Response(
             {"code": 404, "errors": "Your tokens may not present"},
             status=status.HTTP_404_NOT_FOUND,
@@ -155,9 +150,7 @@ class RefreshAccessTokenView(GenericAPIView):
                     # Attempt to refresh the access token using the provided refresh token
                     refresh = RefreshToken(refresh_token)
                     access_token = str(refresh.access_token)
-                    return Response(
-                        {"access_token": access_token}, status=status.HTTP_200_OK
-                    )
+                    return Response({"access_token": access_token}, status=status.HTTP_200_OK)
                 return Response(
                     {"code": 403, "error": "Please enter a refresh token"},
                     status=status.HTTP_403_FORBIDDEN,

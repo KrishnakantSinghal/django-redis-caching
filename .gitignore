@@ -4,4 +4,3 @@ db.sqlite3
 .pre-commit-config.yaml
 pyproject.toml
 pylintrc
-

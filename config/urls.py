@@ -2,10 +2,10 @@
 config/urls.py
 """
 
+import debug_toolbar
 # Import necessary modules and classes
 from django.contrib import admin
-from django.urls import path, include
-import debug_toolbar
+from django.urls import include, path
 
 # Define project-level URL patterns
 urlpatterns = [
