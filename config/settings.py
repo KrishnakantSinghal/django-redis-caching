@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-!tz1-%=x7&!y3%gi+gz#r7jp!@%k73@o214+*9cmvggysz%f(w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -48,11 +48,20 @@ INSTALLED_APPS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "LOCATION": "redis://redis-container:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
 
+REDIS_HOST = "redis"
+REDIS_PORT = 6380
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG,
+}
 
 # Use the cache for Django's default session engine
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
@@ -78,8 +87,17 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+
+# Set the cache timeout (in seconds)
+CACHE_MIDDLEWARE_SECONDS = 600  # Example: 10 minutes
+CACHE_MIDDLEWARE_KEY_PREFIX = (
+    "django-redis-caching"  # Change to a unique identifier for your project
+)
+
 
 ROOT_URLCONF = "config.urls"
 

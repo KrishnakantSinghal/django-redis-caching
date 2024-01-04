@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  redis-container:
+    image: "redis:alpine"
+
+    
+  django-app:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: django-redis:latest
+    ports:
+      - "8001:8000"
+    depends_on:
+      - redis-container
+
+volumes:
+  redisdata:
